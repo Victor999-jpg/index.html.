@@ -1,36 +1,27 @@
 <!DOCTYPE html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><script src="https://telegram.org"></script><style>
-body{font-family:sans-serif;padding:20px;display:flex;flex-direction:column;gap:10px;background:#f0f2f5}
-textarea{padding:15px;border-radius:12px;border:1px solid #ddd;font-size:18px;width:100%;box-sizing:border-box;resize:none;height:100px;outline:none;display:block}
-label{font-weight:bold;font-size:12px;color:#888;margin-top:10px;text-transform:uppercase}
-button{padding:15px;background:#0088cc;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:10px}
-button:active{background:#006699}
-#st{font-size:12px;color:#333;text-align:center;height:20px}
+body{font-family:sans-serif;padding:20px;display:flex;flex-direction:column;gap:10px;background:#fdfdfd}
+textarea{padding:15px;border-radius:12px;border:2px solid #0088cc;font-size:18px;width:100%;box-sizing:border-box;resize:none;height:100px;outline:none}
+label{font-weight:bold;font-size:12px;color:#333;margin-top:10px;text-transform:uppercase}
+button{padding:18px;background:#0088cc;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold}
+button:active{background:#005580}
 </style></head><body>
-<div id="st"></div>
-<label>Русский текст</label>
-<textarea id="ru" placeholder="Введите текст по-русски..."></textarea>
-<button onclick="tr('ru','fa','fa')">ПЕРЕВЕСТИ НА ПЕРСИДСКИЙ ↓</button>
-<label>Персидский (Farsi)</label>
-<textarea id="fa" style="direction:rtl" placeholder="...متن را وارد کنید"></textarea>
-<button onclick="tr('fa','ru','ru')">ПЕРЕВЕСТИ НА РУССКИЙ ↑</button>
+<label>🇷🇺 Русский текст</label>
+<textarea id="ru" placeholder="Пиши тут..."></textarea>
+<button onclick="t('ru','ru','fa','fa')">ПЕРЕВЕСТИ ↓</button>
+<label>🇮🇷 Персидский (Farsi)</label>
+<textarea id="fa" style="direction:rtl" placeholder="...ترجمه"></textarea>
+<button onclick="t('fa','fa','ru','ru')">ПЕРЕВЕСТИ ↑</button>
 <script>
 const tg=window.Telegram.WebApp;tg.expand();
-async function tr(sid,tl,tid){
-    const val=document.getElementById(sid).value;
-    if(!val.trim()){alert('Сначала напиши что-нибудь!');return;}
-    document.getElementById('st').innerText='⏳ Перевожу...';
-    try{
-        const r=await fetch(`https://translate.googleapis.com{tl}&dt=t&q=${encodeURIComponent(val)}`);
-        const j=await r.json();
-        if(j && j[0]){
-            let res = '';
-            j[0].forEach(item => { if(item[0]) res += item[0]; });
-            document.getElementById(tid).value = res;
-            document.getElementById('st').innerText='✅ Готово';
-        }
-    }catch(e){
-        document.getElementById('st').innerText='❌ Ошибка. Проверь интернет.';
-        console.error(e);
+async function t(sid,sl,tl,tid){
+    const v=document.getElementById(sid).value;
+    if(!v)return;
+    const r=await fetch(`https://translate.googleapis.com{sl}&tl=${tl}&dt=t&q=${encodeURIComponent(v)}`);
+    const j=await r.json();
+    if(j&&j){
+        let res='';
+        j.forEach(s=>{if(s)res+=s});
+        document.getElementById(tid).value=res;
     }
 }
 </script></body></html>
